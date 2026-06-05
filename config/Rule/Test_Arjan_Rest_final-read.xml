@@ -1,0 +1,237 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE Rule PUBLIC "sailpoint.dtd" "sailpoint.dtd">
+<Rule language="beanshell" name="Test Arjan Rest final-read">
+  <Source><![CDATA[
+  
+                      package sailpoint.custom.training;
+ import java.io.BufferedReader;
+
+import java.io.InputStreamReader;
+
+import java.util.HashMap;
+
+import org.apache.http.HttpResponse;
+
+import org.apache.http.auth.AuthScope;
+
+import org.apache.http.auth.UsernamePasswordCredentials;
+
+import org.apache.http.client.methods.HttpGet;
+
+import org.apache.http.client.methods.HttpPost;
+
+import org.apache.http.impl.client.BasicCredentialsProvider;
+
+import org.apache.http.client.CredentialsProvider;
+
+import org.apache.http.impl.client.HttpClientBuilder;
+
+import org.apache.http.entity.StringEntity;
+
+import org.json.simple.JSONObject;
+
+ import org.apache.http.client.HttpClient;
+
+   import java.util.*;
+import sailpoint.object.*;
+import sailpoint.api.*;
+ 
+        //
+
+      import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
+import com.squareup.okhttp.Response;
+import com.squareup.okhttp.Builder;
+
+  import java.io.*;
+import sailpoint.okhttp3.*;
+import java.io.File;
+
+import java.io.InputStream;
+
+import java.io.OutputStream;
+
+import java.io.InputStreamReader;
+
+import sailpoint.tools.RFC4180LineIterator;
+
+import sailpoint.tools.RFC4180LineParser;       
+
+import sailpoint.object.ManagedAttribute;
+
+import sailpoint.object.Application;
+
+import java.lang.io.*;
+
+BufferedReader buf = null;
+
+// Locale loc = new Locale("en", "US");
+
+boolean result = false;
+
+buf = new BufferedReader(new InputStreamReader(new FileInputStream("/apps/iiq/Files/SQA-file/HR_RBAC_WORK_AA.txt")));
+
+RFC4180LineIterator fileIterator = new RFC4180LineIterator(buf);
+
+RFC4180LineParser parser = new RFC4180LineParser("|");
+
+String line = "";
+int linenumber = 0;
+boolean isHeader = true;
+List finalList = new ArrayList();
+while((line = fileIterator.readLine()) != null){
+if(linenumber == 0)
+{
+  linenumber++;
+  continue;
+}
+  List columns = parser.parseLine(line);
+
+ String siteName = (String)columns.get(0);
+   String Address = (String)columns.get(3);
+  String City = (String)columns.get(5);
+  String zipCode = (String)columns.get(6);
+   String State = (String)columns.get(9);
+   String Region = (String)columns.get(10);
+ //  String State = (String)columns.get(7);
+  
+  
+   OkHttpClient client = new OkHttpClient();
+  String token = "";
+  Custom custom = context.getObject( Custom.class, "LocationObject" );
+
+
+Custom custom = (Custom) ObjectUtil.lockObject(
+
+     context, // SailPointContext              
+
+     Custom.class, // Object Class - Custom.class in our case
+
+     null, // The object ID in String form
+
+     "LocationObject", // The object Name in String form
+
+     PersistenceManager.LOCK_TYPE_TRANSACTION  // The type of lock we want - either persistent or transaction. 
+
+     );
+if ( custom == null ) {
+  custom = new Custom();
+
+  custom.setName( "LocationObject" );
+
+}
+
+
+// Now add some attributes:
+
+
+    MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
+    RequestBody body = RequestBody.create(mediaType, "username=aripp002&password=test");
+    Request request = new Request.Builder()
+      .url("https://remedyrestqa.int.usc.local:9443/api/jwt/login")
+      .method("POST", body)
+      .addHeader("Content-Type", "application/x-www-form-urlencoded")
+      .build();
+    Response responselogin = client.newCall(request).execute();
+  String token = responselogin.body().string();
+  String url ="https://remedyrestqa.int.usc.local:9443/api/arsys/v1/entry/";
+//  String siteName = "TA1213";
+//  String zipCode = "73010";
+//  String status = "1";
+//  String City = "CRESCENT CITY";
+  
+  
+  
+ String bodyfinal ="{\r\n  \"values\": {\r\n    \"Site\": \""+ siteName +"\",\r\n    \"Street\": \""+ Address +"\",\r\n    \"Country\": \"United States\",\r\n    \"State Province\":  \""+ State +"\",\r\n    \"City\": \""+ City +"\",\r\n    \"Zip/Postal Code\": \""+zipCode+"\",\r\n    \"Submitter\": \"SailPoint Rest\",\r\n    \"Status\": \""+status+"\",\r\n    \"Location ID\": \"" +siteName+"\",\r\n    \"Region\":  \""+ Region +"\",\r\n    \"Description\": \"New Site from Sailpoint\"       \r\n }\r\n}\r\n";
+
+  if (token != null){
+    
+
+MediaType mediaType = MediaType.parse("application/json");
+  
+// RequestBody body = RequestBody.create(mediaType, "{\r\n  \"values\": {\r\n    \"Site\": \"Test86\",\r\n    \"Street\": \"125 Test Street\",\r\n    \"Country\": \"United States\",\r\n    \"State Province\": \"Maryland\",\r\n    \"City\": \"Baltimore\",\r\n    \"Zip/Postal Code\": \"21128\",\r\n    \"Submitter\": \"SailPoint Rest\",\r\n    \"Status\": \"1\",\r\n    \"Location ID\": \"Test01\",\r\n    \"Description\": \"New Site from Sailpoint\"       \r\n }\r\n}\r\n");
+RequestBody body = RequestBody.create(mediaType, bodyfinal);
+   Request request = new Request.Builder()
+ .url(url+"SIT%3ASite")
+  .method("POST", body)
+  .addHeader("Authorization", "AR-JWT"+" "+token) 
+  .addHeader("Content-Type", "application/json")
+  .addHeader("Cookie", "_cacheId=642836")
+  .build();
+Response response = client.newCall(request).execute();
+
+    String location = response.headers("Status").toString().replaceAll("\\[","").replaceAll("\\]","").replaceAll(url,"").replaceAll("SIT:Site/","");
+ 
+    custom.put( siteName,  location);
+   
+
+//custom.put( "someKey2", Arrays.asList( new String[] {"listValue1", "listValue2", "listValue3"} ) );
+
+// custom.put( "someKey3", true );
+
+// Do more stuff...
+
+// Save it and commit it.
+
+context.saveObject( custom );
+
+context.saveObject( custom );
+
+context.commitTransaction();
+    if (location.isEmpty())
+    {
+     //  continue;
+     return "Already";
+    }
+    else 
+    {
+      custom.put( siteName,  location);
+   
+
+//custom.put( "someKey2", Arrays.asList( new String[] {"listValue1", "listValue2", "listValue3"} ) );
+
+// custom.put( "someKey3", true );
+
+// Do more stuff...
+
+// Save it and commit it.
+
+context.saveObject( custom );
+
+context.saveObject( custom );
+
+context.commitTransaction();
+     return location;
+    }
+  }
+  
+  /*
+  finalList.add(LocationCode);
+  finalList.add(Address);
+    finalList.add(State);
+ finalList.add(ZipCode);
+ 
+  finalList.add(Region);
+  */
+ 
+} 
+// return finalList;
+
+ // return "Success"
+]]></Source>
+</Rule>

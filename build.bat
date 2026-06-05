@@ -1,0 +1,1 @@
+C:\ssb\ssb-v7.0.2\ant\bin\ant %*

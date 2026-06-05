@@ -1,0 +1,40 @@
+# SailPoint IIQ - Ignore proprietary libraries
+lib/
+
+# Compiled class files
+*.class
+*.jar
+*.war
+*.ear
+
+# Build output
+target/
+build/
+out/
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+.eclipse/
+.classpath
+.project
+.settings/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Environment / secrets
+*.env
+config/local/
+
+
+.ga
+ga/
