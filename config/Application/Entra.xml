@@ -52,7 +52,7 @@
       </entry>
       <entry key="encrypted" value="clientSecret,refresh_token,clientCertificate,private_key,privateKeyPassword,exchangeUserPassword,teamsBotSecret,oauth_token_info"/>
       <entry key="exchangeUserName"/>
-      <entry key="exchangeUserPassword" value="1:ACP:/="/>
+      <entry key="exchangeUserPassword" value="1:ACP"/>
       <entry key="grantType" value="CLIENT_CREDENTIALS"/>
       <entry key="isB2CTenant">
         <value>
